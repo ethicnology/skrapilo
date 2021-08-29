@@ -170,4 +170,4 @@ const argv = yargs(Deno.args)
 
 const HTML: HTMLDocument = await fetchTracker(argv.tracker, argv.search);
 const results: Torrent[] = await scrapTorrent(argv.tracker, HTML);
-console.log(results);
+console.log(JSON.stringify(results, null, 2))
