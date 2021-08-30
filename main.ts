@@ -2,17 +2,18 @@ import {
   assertEquals,
   assertExists,
 } from "https://deno.land/std@0.104.0/testing/asserts.ts";
-import puppeteer from "https://deno.land/x/puppeteer@9.0.1/mod.ts";
 import {
   DOMParser,
   HTMLDocument,
 } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
+import puppeteer from "https://deno.land/x/puppeteer@9.0.1/mod.ts";
 
-const TRACKERS: string[] = ["ThePirateBay", "YggTorrent"];
+const TRACKERS: string[] = ["ThePirateBay", "YggTorrent", "EZTV"];
 
-enum TRACKERS_URL {
+enum URL {
   thepiratebay = "https://thepiratebay.org",
   yggtorrent = "https://www4.yggtorrent.li",
+  eztv = "https://eztv.re",
 }
 
 interface Torrent {
@@ -37,7 +38,7 @@ async function fetchThePirateBay(search: string): Promise<string> {
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080 });
   const response = await page.goto(
-    `${TRACKERS_URL.thepiratebay}/search.php?q=${search}`,
+    `${URL.thepiratebay}/search.php?q=${search}`,
   );
   assertEquals(response.status(), 200);
   await page.click('label[title="Order by Seeders"]');
@@ -48,8 +49,14 @@ async function fetchThePirateBay(search: string): Promise<string> {
 
 async function fetchYggTorrent(search: string): Promise<string> {
   const response = await fetch(
-    `${TRACKERS_URL.yggtorrent}/engine/search?name=${search}&do=search&sort=seeders`,
+    `${URL.yggtorrent}/engine/search?name=${search}&do=search&sort=seeders`,
   );
+  assertEquals(response.status, 200);
+  return await response.text();
+}
+
+async function fetchEZTV(search: string): Promise<string> {
+  const response = await fetch(`${URL.eztv}/search/${search}`);
   assertEquals(response.status, 200);
   return await response.text();
 }
@@ -66,6 +73,10 @@ async function fetchTracker(
     }
     case TRACKERS[1]: {
       HTML = await fetchYggTorrent(search);
+      break;
+    }
+    case TRACKERS[2]: {
+      HTML = await fetchEZTV(search);
       break;
     }
     default: {
@@ -129,6 +140,30 @@ function scrapYggTorrent(HTML: HTMLDocument): Torrent[] {
   return results;
 }
 
+function scrapEZTV(HTML: HTMLDocument): Torrent[] {
+  const row = HTML.querySelectorAll("table.forum_header_border tr");
+  const results: Torrent[] = [];
+  for (let i = 0; i < row.length; i++) {
+    if (i > 8) {
+      const torrent: Torrent = {
+        category: row[i].children[0]?.children[0]?.getAttribute("href"),
+        name: row[i].children[1]?.textContent.replace(/[\n\r]/g, ""),
+        comments: null,
+        date: row[i].children[4]?.textContent,
+        size: row[i].children[3]?.textContent,
+        downloads: null,
+        seeders: parseInt(row[i].children[5]?.textContent),
+        leechers: null,
+        magnet: row[i].children[2]?.children[0]?.getAttribute("href"),
+        torrent: row[i].children[2]?.children[1]?.getAttribute("href"),
+        user: null,
+      };
+      results.push(torrent);
+    }
+  }
+  return results;
+}
+
 function scrapTorrent(tracker: string, HTML: HTMLDocument): Torrent[] {
   let results: Torrent[] = [];
   switch (tracker) {
@@ -138,6 +173,10 @@ function scrapTorrent(tracker: string, HTML: HTMLDocument): Torrent[] {
     }
     case TRACKERS[1]: {
       results = scrapYggTorrent(HTML);
+      break;
+    }
+    case TRACKERS[2]: {
+      results = scrapEZTV(HTML);
       break;
     }
     default: {
@@ -170,4 +209,4 @@ const argv = yargs(Deno.args)
 
 const HTML: HTMLDocument = await fetchTracker(argv.tracker, argv.search);
 const results: Torrent[] = await scrapTorrent(argv.tracker, HTML);
-console.log(JSON.stringify(results, null, 2))
+console.log(JSON.stringify(results, null, 2));

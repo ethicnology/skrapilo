@@ -1,55 +1,68 @@
 # skrapilo
 
-Torrents scraper using The Pirate Bay and YggTorrent
+Torrents scraper using The Pirate Bay, YggTorrent and EZTV.
 
 ## prerequisites
+
 - Linux
+
 ### The Pirate Bay ONLY
-**thepiratebay.org** is protected from scrapers, to bypass this protection **skrapilo** is using an automated chromium browser (Puppeteer).
-You need a recent version of **chromium-browser** installed in **/usr/bin/chromium-browser**.
+
+**thepiratebay.org** is protected from scrapers, to bypass this protection
+**skrapilo** is using an automated chromium browser (Puppeteer).\
+You need a recent version of **chromium-browser** installed in
+**/usr/bin/chromium-browser**.
+
 ```sh
 sudo apt install chromium-browser
 ```
 
 ## installation
+
 ### executable
+
 Download executable file named **skrapilo**
+
 ```sh
 wget https://github.com/ethicnology/skrapilo/blob/main/skrapilo?raw=true
 ```
+
 ### or from sources
-Clone this repository.
-Using a deno version >1.13 you can execute main.ts file.
+
+Clone this repository. Using a deno version >1.13 you can execute main.ts file.
+
 ```sh
 deno run -A --unstable main.ts --search "donnie brasco" --tracker YggTorrent
 ```
 
 Or compile the executable.
+
 ```sh
 deno compile -A --unstable main.ts
 ```
 
-
-
 ## usage
+
 ```sh
 ./skrapilo --help
-#Options:
-#      --version  Show version number                                   [boolean]
-#  -s, --search   Input your search string                    [string] [required]
-#  -t, --tracker  Choose a tracker to fetch
-#                     [string] [required] [choices: "ThePirateBay", "YggTorrent"]
-#      --help     Show help                                             [boolean]
-
+Options:
+      --version  Show version number                                   [boolean]
+  -s, --search   Input your search string                    [string] [required]
+  -t, --tracker  Choose a tracker to fetch
+             [string] [required] [choices: "ThePirateBay", "YggTorrent", "EZTV"]
+      --help     Show help                                             [boolean]
 ```
 
 ## examples
+
 Command
+
 ```sh
 ./skrapilo --search "donnie brasco" --tracker ThePirateBay
 ```
 
 Results are sorted by seeders
+
 ```json
 [
   {
