@@ -3,11 +3,8 @@
 Torrents scraper using The Pirate Bay, YggTorrent and EZTV.
 
 ## prerequisites
-
-- Linux
-
 ### The Pirate Bay ONLY
-
+- Linux
 **thepiratebay.org** is protected from scrapers, to bypass this protection
 **skrapilo** is using an automated chromium browser (Puppeteer).\
 You need a recent version of **chromium-browser** installed in
