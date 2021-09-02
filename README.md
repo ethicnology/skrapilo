@@ -21,11 +21,8 @@ sudo apt install chromium-browser
 
 ### executable
 
-Download executable file named **skrapilo**
+Download the [**lastest release**](https://github.com/ethicnology/skrapilo/releases) for your system (**Linux, MacOS or Windows**)
 
-```sh
-wget https://github.com/ethicnology/skrapilo/blob/main/skrapilo?raw=true
-```
 
 ### or from sources
 
