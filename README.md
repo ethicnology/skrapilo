@@ -3,10 +3,15 @@
 Torrents scraper using The Pirate Bay, YggTorrent and EZTV.
 
 ## prerequisites
-### The Pirate Bay ONLY
-**thepiratebay.org** is protected from scrapers, to bypass this protection **skrapilo** is using an automated chromium browser (Puppeteer).
-- Linux  
-- You need a recent version of **chromium-browser** installed in **/usr/bin/chromium-browser**.
+
+### Only for The Pirate Bay
+
+**thepiratebay.org** is protected from scrapers, to bypass this protection
+**skrapilo** is using an automated chromium browser (Puppeteer).
+
+- Linux
+- You need a recent version of **chromium-browser** installed in
+  **/usr/bin/chromium-browser**.
 
 ```sh
 sudo apt install chromium-browser
@@ -34,6 +39,12 @@ Or compile the executable.
 
 ```sh
 deno compile -A --unstable main.ts
+```
+
+**compile.sh** build skrapilo for all available deno targets.
+```sh
+chmod +x compile.sh
+./compile.sh
 ```
 
 ## usage
